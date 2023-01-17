@@ -1,39 +1,39 @@
 const Sauce = require('../models/sauce');
 const fs = require('fs');
-
 // getAllSauces
 exports.getAllSauces = (req, res, next) => {
-    Sauce.find()
-    .then((sauces) => {
+    Sauce.find().then(
+		(sauces) => {
         res.status(200).json(sauces);
     })
-    .catch((error) => {
+    .catch(
+		(error) => {
         res.status(400).json({
             error: error,
         });
     });
-};
-
+}
 // getOneSauce
 exports.getOneSauce = (req, res, next) => {
 	Sauce.findOne({
-		_id: req.params.id,
+		_id: req.params.id
 	})
-		.then((sauce) => {
+	.then(
+		(sauce) => {
 			res.status(200).json(sauce);
 		})
-		.catch((error) => {
+		.catch(
+			(error) => {
 			res.status(404).json({
 				error: error,
 			});
 		});
 };
-
 // createSauce
-
 exports.createSauce = (req, res, next) => {
 	req.body.sauce = JSON.parse(req.body.sauce);
 	const url = req.protocol + "://" + req.get("host");
+	// console.log('createSauce is working')
 	const sauce = new Sauce({
 		userId: req.body.sauce.userId,
 		name: req.body.sauce.name,
@@ -42,11 +42,9 @@ exports.createSauce = (req, res, next) => {
 		mainPepper: req.body.sauce.mainPepper,
 		imageUrl: url + "/images/" + req.file.filename,
 		heat: req.body.sauce.heat,
-		likes: req.body.sauce.likes,
-		dislikes: req.body.sauce.dislikes,
-		userLiked: req.body.sauce.userLiked,
-		userDisliked: req.body.sauce.userDisliked,
-	});
+		
+	})
+	// console.log(sauce);
 	sauce.save()
 	.then(() =>{
 		res.status(201).json({
@@ -55,33 +53,10 @@ exports.createSauce = (req, res, next) => {
 	})
 	.catch((error) =>{
 		res.status(400).json({
-			error: error
+			error: error,
 		})
 	})
-
 }
-
-// delete a sauce
-
-// exports.deleteSauce = (req, res, next) => {
-// 	Sauce.findOne({ _id: req.params.id })
-// 	.then((sauce) => {
-// 		if(sauce.userId !== req.auth.userId){
-// 			res.status(403).json({message: "Unauthorised"})
-// 			return;
-// 		}
-// 		const filename = sauce.imageUrl.split("/images/")[1];
-// 		fs.unlink("images/" + filename, () => {
-// 			Sauce.deleteOne({ _id: req.params.id })
-// 			.then(() => {
-// 				res.status(200).json({ message: "Deleted!"});
-// 				})
-// 				.catch((error) => {
-// 					res.status(400).json({ error: error,});
-// 				});
-// 		});
-// 	});
-// };
 
 exports.deleteSauce = (req, res, next) => {
 	Sauce.findOne({ _id: req.params.id }).then((sauce) => {
@@ -101,6 +76,10 @@ exports.deleteSauce = (req, res, next) => {
 		});
 	});
 };
+// router.put('/:id', auth, sauceCtrl.modifySauce);
+// router.delete('/:id', auth, sauceCtrl.deleteSauce);
+
+	
 
 // like a sauce
 
